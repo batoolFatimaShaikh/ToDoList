@@ -8,7 +8,7 @@ import addDays from 'date-fns/addDays';
 import isToday from 'date-fns/isToday';
 
 
-const FORMAT = "dd / mm / yyyy";
+const FORMAT = "dd / MM / yyyy";
 function formatDate(date, format, locale) {
     return dateFnsFormat(date, format, { locale });
 }
@@ -58,41 +58,30 @@ const AddTask = ({ onCancel, onAddTask }) => {
 const TASKS_HEADER_MAPPING = {
     INBOX: "Inbox",
     TODAY: "Today",
-    NEXT: "Next 7 Day",
+    NEXT_7: "Next 7 Day",
 };
 
-const TaskItems = ({ tasks, selectedTab }) => {
-    let taskToRender = [...tasks];
-    if (selectedTab === 'NEXT') {
-        return (taskToRender = taskToRender
-            .filter(
-                (task) =>
+const TaskItems = ({ selectedTab, tasks }) => {
+    let tasksToRender = [...tasks];
+    if (selectedTab === "NEXT_7") {
+        tasksToRender = tasksToRender.filter(
+            (task) =>
 
-                    isAfter(task.date, new Date()) &&
-                    isBefore(task.date, addDays(new Date(), 7))
-            )
-            .map((task) => (
-                <div className="task-item">
-                    <p>{task.text}</p>
-                    <p>{dateFnsFormat(new Date(task.date), FORMAT)}</p>
-                </div>
-            )));
+                isAfter(task.date, new Date()) &&
+                isBefore(task.date, addDays(new Date(), 7))
+        );
     }
     if (selectedTab === "TODAY") {
-        return taskToRender
-            .filter(task =>
-                isToday(task.date)
-            )
-            .map((task) => (
-                <div className="task-item">
-                    <p>{task.text}</p>
-                    <p>{dateFnsFormat(new Date(task.date), FORMAT)}</p>
-                </div>
-            ));
+        tasksToRender = tasksToRender.filter(task =>
+            isToday(task.date)
+        );
     }
+
+
+
     return (
         <div className="task-item-container">
-            {taskToRender.map((task, idx) => (
+            {tasksToRender.map((task) => (
                 <div className="task-item">
                     <p>{task.text}</p>
                     <p>{dateFnsFormat(new Date(task.date), FORMAT)}</p>
